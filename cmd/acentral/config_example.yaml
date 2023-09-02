@@ -1,0 +1,10 @@
+acentral:
+  url: https://<TMCM Address> (Mandatory)
+  app_id: <Apex Central application ID> (Mandatory)
+  api_key: <Apex Central API Key> (Mandatory)
+  ignore_tls_errors: true (Optional)
+  proxy: <Proxy URL> (Optional)
+vtotal:
+  api_key: <Virus Total API Key> (Mandatory)
+  threads: 5 (Optional)
+  proxy: <Proxy URL> (Optional)

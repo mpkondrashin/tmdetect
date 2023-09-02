@@ -5,10 +5,10 @@ import (
 	"time"
 )
 
-const CSVHeading = "Object,Type,Scan Action,Scan Prefilter,Notes, ExpirationDate"
+const CSVHeading = "Version:V1,,,,,\nObject,Type,Scan Action,Scan Prefilter,Notes,ExpirationDate"
 
-//go:generate enum -package apex -type ObjectType -values IP,Domain,URL,SHA1
-//go:generate enum -package apex -type ScanAction -values Block,Log
+//go:generate enum -package apex -type ObjectType -names IP,Domain,URL,SHA1
+//go:generate enum -package apex -type ScanAction -names Block,Log
 type SO struct {
 	Object        string
 	Type          ObjectType

@@ -4,28 +4,28 @@ package apex
 
 import (
     "encoding/json"
-	"errors"
+    "errors"
     "fmt"
     "strconv"
-	"strings"
+    "strings"
 )
 
 type ObjectType int
 
 const (
-    ObjectTypeIP ObjectType = iota
-    ObjectTypeDomain ObjectType = iota
-    ObjectTypeURL ObjectType = iota
-    ObjectTypeSHA1 ObjectType = iota
+    ObjectTypeIP     ObjectType = 0
+    ObjectTypeDomain ObjectType = 1
+    ObjectTypeURL    ObjectType = 2
+    ObjectTypeSHA1   ObjectType = 3
 )
 
 // String - return string representation for ObjectType value
 func (v ObjectType)String() string {
     s, ok := map[ObjectType]string {
-        ObjectTypeIP: "IP",
+        ObjectTypeIP:     "IP",
         ObjectTypeDomain: "Domain",
-        ObjectTypeURL: "URL",
-        ObjectTypeSHA1: "SHA1",
+        ObjectTypeURL:    "URL",
+        ObjectTypeSHA1:   "SHA1",
     }[v]
     if ok {
         return s
@@ -38,10 +38,10 @@ func (v ObjectType)String() string {
 var ErrUnknownObjectType = errors.New("unknown ObjectType")
 
 var mapObjectTypeFromString = map[string]ObjectType{
-    "ip": ObjectTypeIP,
+    "ip":     ObjectTypeIP,
     "domain": ObjectTypeDomain,
-    "url": ObjectTypeURL,
-    "sha1": ObjectTypeSHA1,
+    "url":    ObjectTypeURL,
+    "sha1":   ObjectTypeSHA1,
 }
 
 // UnmarshalJSON implements the Unmarshaler interface of the json package for ObjectType.
@@ -58,16 +58,21 @@ func (s *ObjectType) UnmarshalJSON(data []byte) error {
     return nil
 }
 
+// MarshalJSON implements the Marshaler interface of the json package for ObjectType.
+func (s ObjectType) MarshalJSON() ([]byte, error) {
+    return []byte(fmt.Sprintf("\"%v\"", s)), nil
+}
+
 // UnmarshalYAML implements the Unmarshaler interface of the yaml.v3 package for ObjectType.
 func (s *ObjectType) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var v string
-	if err := unmarshal(&v); err != nil {
-		return err
-	}
-	result, ok := mapObjectTypeFromString[strings.ToLower(v)]		
-	if !ok {
-		return fmt.Errorf("%w: %s", ErrUnknownObjectType, v)
-	}
-	*s = result
-	return nil
+    var v string
+    if err := unmarshal(&v); err != nil {
+        return err
+    }
+    result, ok := mapObjectTypeFromString[strings.ToLower(v)]  
+    if !ok {
+        return fmt.Errorf("%w: %s", ErrUnknownObjectType, v)
+    }
+    *s = result
+    return nil
 }

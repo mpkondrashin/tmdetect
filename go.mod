@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/VirusTotal/vt-go v0.0.0-20230717142150-8431ff2cc00f // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
+	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect

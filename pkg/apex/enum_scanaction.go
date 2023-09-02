@@ -4,24 +4,24 @@ package apex
 
 import (
     "encoding/json"
-	"errors"
+    "errors"
     "fmt"
     "strconv"
-	"strings"
+    "strings"
 )
 
 type ScanAction int
 
 const (
-    ScanActionBlock ScanAction = iota
-    ScanActionLog ScanAction = iota
+    ScanActionLog   ScanAction = 0
+    ScanActionBlock ScanAction = 1
 )
 
 // String - return string representation for ScanAction value
 func (v ScanAction)String() string {
     s, ok := map[ScanAction]string {
-        ScanActionBlock: "Block",
-        ScanActionLog: "Log",
+        ScanActionLog:   "log",
+        ScanActionBlock: "block",
     }[v]
     if ok {
         return s
@@ -34,8 +34,8 @@ func (v ScanAction)String() string {
 var ErrUnknownScanAction = errors.New("unknown ScanAction")
 
 var mapScanActionFromString = map[string]ScanAction{
+    "log":   ScanActionLog,
     "block": ScanActionBlock,
-    "log": ScanActionLog,
 }
 
 // UnmarshalJSON implements the Unmarshaler interface of the json package for ScanAction.
@@ -52,16 +52,21 @@ func (s *ScanAction) UnmarshalJSON(data []byte) error {
     return nil
 }
 
+// MarshalJSON implements the Marshaler interface of the json package for ScanAction.
+func (s ScanAction) MarshalJSON() ([]byte, error) {
+    return []byte(fmt.Sprintf("\"%v\"", s)), nil
+}
+
 // UnmarshalYAML implements the Unmarshaler interface of the yaml.v3 package for ScanAction.
 func (s *ScanAction) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var v string
-	if err := unmarshal(&v); err != nil {
-		return err
-	}
-	result, ok := mapScanActionFromString[strings.ToLower(v)]		
-	if !ok {
-		return fmt.Errorf("%w: %s", ErrUnknownScanAction, v)
-	}
-	*s = result
-	return nil
+    var v string
+    if err := unmarshal(&v); err != nil {
+        return err
+    }
+    result, ok := mapScanActionFromString[strings.ToLower(v)]  
+    if !ok {
+        return fmt.Errorf("%w: %s", ErrUnknownScanAction, v)
+    }
+    *s = result
+    return nil
 }
