@@ -1,6 +1,11 @@
 # Trend Micro Detected Files
 
-Remove excess UDSO indicators for malware that are detected by Trend Micro antivirus engines.
+Remove excess UDSO indicators for malware files that are detected by Trend Micro antivirus engine.
+
+Trend Micro Apex Central offers convinient way to add IoCs to all Trend Micro products from one place. This tool/;possiblity/technology/function can be used to mitigate the latest threats that are missed by other engines of the product. On the market, there is a big amount of sources for such indicators from commercial organizations and government bodies. As result, this feature is easy to misuse, by providing way more indicators then Trend Micro product are able to handle, as each indicators slows down the product operation. Apex Central offers one solution to this problem: automatically remove indicators after defined time, i.e. 30 days. This project offers complementing approach - remove hashes for files that are detected by at least by one of other Trend Micro antimalware engines. Unfortunately is not possible to implement in direct manner as engines by themselvs can analyze files but not their hashes. TMDetect project offers following approach - check database of hashes of the files that where analyzed in the past. One of the best such databases on the market is VirusTotal project. If particular file was detected by Trend Micro in the past, it is very likely that its hash will be stored in Virus Total database along with Trend Micro verdict.
+
+
+To manage indicators open managment console and go to Threat Intel -> User-Defined Suspicious Objects. 
 
 Three utilities are offered:
 1. acentral - filter indicators in Apex Central
