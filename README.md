@@ -8,9 +8,9 @@ Trend Micro Apex Central offers convinient way to add IoCs to all Trend Micro pr
 To manage indicators open managment console and go to Threat Intel -> User-Defined Suspicious Objects. 
 
 Three utilities are offered:
-1. acentral - filter indicators in Apex Central
+1. convert - convert one format CSV file with indicators to the one that is supported by Apex Central to import. This utility does not filter anything.
 2. filter - filter special format CSV file with indicators and save to another CSV file to be imported to Apex Central
-3. convert - convert special format CSV file with indicators to another CSV file to be imported to Apex Central
+3. acentral - filter indicators alredy stored in Apex Central
 
 ## ACentral
 Filter indicators in Apex Central using Virus Total. 
