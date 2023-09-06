@@ -7,7 +7,7 @@ Trend Micro Apex Central offers convinient way to add IoCs to all Trend Micro pr
 
 
 Three utilities are offered:
-1. **Convert** - convert one format CSV file with indicators to the one that is supported by Apex Central to import. This utility does not filter anything.
+1. **Convert** - convert CSV file containing indicators of particular (see below) format to the one that is supported by Apex Central to import. This utility does not filter anything.
 2. **Filter** - filter special format CSV file with indicators and save to another CSV file to be imported to Apex Central
 3. **Acentral** - filter indicators alredy stored in Apex Central
 
