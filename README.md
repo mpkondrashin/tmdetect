@@ -9,9 +9,9 @@ Trend Micro Apex Central offers convinient way to add IoCs to all Trend Micro pr
 Three utilities are offered:
 1. **Convert** - convert CSV file containing indicators of particular (see below) format to the one that is supported by Apex Central to import. This utility does not filter anything.
 2. **Filter** - filter special format CSV file with indicators and save to another CSV file to be imported to Apex Central
-3. **Acentral** - filter indicators alredy stored in Apex Central
+3. **ACentral** - filter indicators alredy stored in Apex Central
 
-**Filter** utility can be used not to put hashes of the files into Apex Central list of indicators that are detected by Trend Micro to the moment of this utility run. **ACentral** can be run on regular bases to cleanup Apex Central list of indicators by removing hashes of detected files. If amount of indicators to put is not very big, then all of these indicators can be put into the Apex Central onle **ACentral** can be used
+**Filter** utility can be used not to put hashes of the files into Apex Central list of indicators that are detected by Trend Micro to the moment of this utility run. **ACentral** can be run on regular bases to cleanup Apex Central list of indicators by removing hashes of detected files. If amount of indicators to put is not very big, then all of these indicators can be put into the Apex Central only **ACentral** can be used
 
 To use this tool effectivly, it is recommended to buy subsrciption to Virus Total service as this removes limitations of free tire Public API.
 
@@ -35,18 +35,18 @@ ACentral provides following ways to provide options:
 Full config file explained:
 ```yaml
 acentral:
-  url: https://<TMCM Address> (Mandatory)
-  app_id: <Apex Central application ID> (Mandatory)
-  api_key: <Apex Central API Key> (Mandatory)
-  ignore_tls_errors: true (Optional)
-  proxy: <Proxy URL> (Optional)
+  url: https://<TMCM Address> (string, mandatory)
+  app_id: <Apex Central application ID> (string, mandatory)
+  api_key: <Apex Central API Key> (string, mandatory)
+  ignore_tls_errors: true (boolean, םptional)
+  proxy: <Proxy URL> (string, optional)
 vtotal:
-  api_key: <Virus Total API Key> (Mandatory)
-  threads: 5 (Optional)
-  proxy: <Proxy URL> (Optional)
+  api_key: <Virus Total API Key> (string, mandatory)
+  threads: 5 (integer, optional)
+  proxy: <Proxy URL> (string, optional)
 ```
 
-To set these parameters through commandline. For example to set action to block, use following command line option:
+To set these parameters through commandline, for example, to set action to block, use following command line option:
 ```commandline 
 acentral --vtotal.api_key=2a44d6df1322000eb55c580d8f3dbe0d28b24435503576a967ebe8db420df628
 ```
