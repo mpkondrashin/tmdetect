@@ -8,9 +8,13 @@ Trend Micro Apex Central offers convinient way to add IoCs to all Trend Micro pr
 To manage indicators open managment console and go to Threat Intel -> User-Defined Suspicious Objects. 
 
 Three utilities are offered:
-1. convert - convert one format CSV file with indicators to the one that is supported by Apex Central to import. This utility does not filter anything.
-2. filter - filter special format CSV file with indicators and save to another CSV file to be imported to Apex Central
-3. acentral - filter indicators alredy stored in Apex Central
+1. **Convert** - convert one format CSV file with indicators to the one that is supported by Apex Central to import. This utility does not filter anything.
+2. **Filter** - filter special format CSV file with indicators and save to another CSV file to be imported to Apex Central
+3. **Acentral** - filter indicators alredy stored in Apex Central
+
+**Filter** utility can be used not to put hashes of the files into Apex Central list of indicators that are detected by Trend Micro to the moment of this utility run. **ACentral** can be run on regular bases to cleanup Apex Central list of indicators by removing hashes of detected files. If amount of indicators to put is not very big, then all of these indicators can be put into the Apex Central onle **ACentral** can be used
+
+To use this tool effectivly, it is recommended to buy subsrciption to Virus Total service as this removes limitations of free tire Public API.
 
 ## ACentral
 Filter indicators in Apex Central using Virus Total. 
@@ -73,7 +77,7 @@ TMDetect provides following ways to provide options:
 Full config file explained:
 ```yaml
 action: Block # or Log (the default value) detected files
-apikey: 2a44d6df1322000eb55c580d8f3dbe0d28b24435503576a967ebe8db420df628 #  VirusTotal API key
+apikey: 2a44d6df1321000eb51c580d8f3dbe0d28b24435503676a967ebe8db420df628 #  VirusTotal API key
 expire: 60 # After how meny days remove indications. Default is 30.
 input: data.csv # imput filename. "-" for using stdin
 output: udso.csv # output filename. "-" for using stdout
