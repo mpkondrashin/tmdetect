@@ -46,14 +46,14 @@ vtotal:
   proxy: <Proxy URL> (string, optional)
 ```
 
-To set these parameters through commandline, for example, to set action to block, use following command line option:
+To set these parameters through commandline, for example, to set Virus Total API key, use following command line option:
 ```commandline 
 acentral --vtotal.api_key=2a44d6df1322000eb55c580d8f3dbe0d28b24435503576a967ebe8db420df628
 ```
 
 To set these parameters through environment variable, add TMDETECT_ prefix. Example for the API Key:
 ```commandline
-TMDETECT_VTOTAL.API_KEY=2a44d6df1322000eb55c580d8f3dbe0d28b24435503576a967ebe8db420df628
+TMDETECT_VTOTAL_API_KEY=2a44d6df1322000eb55c580d8f3dbe0d28b24435503576a967ebe8db420df628
 ```
 
 ## Filter
@@ -91,5 +91,3 @@ To set these parameters through environment variable, add TMDETECT_ prefix. Exam
 ```commandline
 TMDETECT_APIKEY=2a44d6df1322000eb55c580d8f3dbe0d28b24435503576a967ebe8db420df628
 ```
-
-To manage indicators open managment console and go to Threat Intel -> User-Defined Suspicious Objects. 
