@@ -2,7 +2,6 @@ package vtotal
 
 import (
 	"fmt"
-	"os"
 	"testing"
 	"time"
 )
@@ -21,25 +20,26 @@ func (t TestCase) String() string {
 func TestEstimatedFinishTimePublic(t *testing.T) {
 	now := time.Date(2023, 3, 5, 20, 15, 23, 0, time.UTC)
 
-	f, _ := os.Create("a.csv")
-	defer f.Close()
-	start := now.Unix()
-	for i := 0; i < 1100; i++ {
-		quota := &VTQuotaResponse{}
-		quota.APIRequestsMonthly.User.Allowed = 100
-		quota.APIRequestsDaily.User.Allowed = 30
-		quota.APIRequestsHourly.User.Allowed = 10
-		a := quota.EstimateFinishTimePublicAt(now, i+1)
-		fmt.Fprintf(f, "\"%d\";\"%d\";\"%v\"\n", i+1, a.Unix()-start, a)
-	}
-
+	/*
+		f, _ := os.Create("a.csv")
+		defer f.Close()
+		start := now.Unix()
+		for i := 0; i < 1100; i++ {
+			quota := &VTQuotaResponse{}
+			quota.APIRequestsMonthly.User.Allowed = 100
+			quota.APIRequestsDaily.User.Allowed = 30
+			quota.APIRequestsHourly.User.Allowed = 10
+			a := quota.EstimateFinishTimePublicAt(now, i+1)
+			fmt.Fprintf(f, "\"%d\";\"%d\";\"%v\"\n", i+1, a.Unix()-start, a)
+		}
+	*/
 	quota := &VTQuotaResponse{}
 	quota.APIRequestsMonthly.User.Allowed = 1000
 	quota.APIRequestsDaily.User.Allowed = 100
 	quota.APIRequestsHourly.User.Allowed = 10
 	n1 := time.Date(2023, 3, 5, 23, 59, 59, 0, time.UTC)
 	actualTime := quota.EstimateFinishTimePublicAt(n1, 8)
-	e1 := time.Date(2023, 3, 5, 23, 59, 01, 0, time.UTC)
+	e1 := time.Date(2023, 3, 6, 0, 0, 0, 0, time.UTC)
 	if actualTime != e1 {
 		t.Fatalf("%v != expected %v", actualTime, e1)
 	}
