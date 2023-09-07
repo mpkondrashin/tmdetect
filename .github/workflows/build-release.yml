@@ -25,8 +25,18 @@ jobs:
       with:
         args: zip tmdetect_acentral_win64.zip acentral.exe README.md
 
+    - name: Build ACentral for Linux
+      run: GOOS=linux GOARCH=amd64 go build ./cmd/acentral
+        
+    - name: Pack for Linux
+      uses: montudor/action-zip@v1
+      with:
+        args: zip tmdetect_acentral_linux64.zip acentral README.md
+          
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: tmdetect_acentral_win64.zip
+        files: |
+          tmdetect_acentral_win64.zip
+          tmdetect_acentral_linux64.zip
