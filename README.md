@@ -90,3 +90,21 @@ To set these parameters through environment variable, add TMDETECT_ prefix. Exam
 ```commandline
 TMDETECT_APIKEY=2a44d6df1322000eb55c580d8f3dbe0d28b24435503576a967ebe8db420df628
 ```
+
+#### Input file format
+Example:
+```csv
+uuid,category,type,value,event_threat_level_id,date
+811786dc-4d53-11ee-be56-0242ac120002,Payload delivery,sha1,6d4dfd809dca65ebe3a443f606bee1ae5979ecb3,Medium,1660845244
+```
+
+## Convert
+
+Convert utility coverts CSV file of particular format (see above) to CSV that is accepted by Apex Central.
+
+Following options are available:
+1. --input - input file path or "-" for stdin
+2. --output - output file path or "-" for stdout
+3. --action - one of the "log" or "block" values
+4. --expire - days after the indicator will expire (removed automatically)
+5. --note - add note to each imported IoC
