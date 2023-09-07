@@ -18,18 +18,23 @@ jobs:
       run: go test ./...
 
     - name: Build ACentral for Windows
-      run: GOOS=windows GOARCH=amd64 go build ./cmd/acentral
+      run: |
+        GOOS=windows GOARCH=amd64 go build ./cmd/acentral
+        GOOS=windows GOARCH=amd64 go build ./cmd/convert
+        GOOS=windows GOARCH=amd64 go build ./cmd/filter
       
     - name: Pack for Windows
       uses: montudor/action-zip@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        args: zip tmdetect_win64.zip acentral.exe README.md
+        args: zip tmdetect_win64.zip acentral.exe convert.exe filter.exe README.md
 
     - name: Build ACentral for Linux
       run: GOOS=linux GOARCH=amd64 go build ./cmd/acentral
         
     - name: Pack for Linux
       uses: montudor/action-zip@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         args: zip tmdetect_linux64.zip acentral README.md
           
@@ -38,6 +43,7 @@ jobs:
           
     - name: Pack for macOS Intel
       uses: montudor/action-zip@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         args: zip tmdetect_macos_intel.zip acentral README.md
             
@@ -46,6 +52,7 @@ jobs:
             
     - name: Pack for macOS ARM
       uses: montudor/action-zip@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         args: zip "tmdetect_macos_m_${{ github.ref_name }}.zip" acentral README.md
     
