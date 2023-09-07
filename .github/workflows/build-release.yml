@@ -16,7 +16,7 @@ jobs:
       run: go test ./...
 
     - name: Build ACentral for Windows
-      run: GOOS=windows GOARCH=amd64 go build cmd/acentral
+      run: GOOS=windows GOARCH=amd64 go build ./cmd/acentral
       
     - name: Pack for Windows
       uses: montudor/action-zip@v1
