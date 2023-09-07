@@ -27,7 +27,7 @@ jobs:
       uses: montudor/action-zip@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        args: zip "tmdetect_win64_${{ github.ref_name }}.zip" acentral.exe convert.exe filter.exe README.md cmd/filter/filter_config_example.yaml cmd/acentral/acentral_config_example.yaml
+        args: zip -j "tmdetect_win64_${{ github.ref_name }}.zip" acentral.exe convert.exe filter.exe README.md cmd/filter/filter_config_example.yaml cmd/acentral/acentral_config_example.yaml
 
     - name: Build ACentral for Linux
       run: |
@@ -39,7 +39,7 @@ jobs:
       uses: montudor/action-zip@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        args: zip "tmdetect_linux64_${{ github.ref_name }}.zip" acentral convert filter README.md cmd/filter/filter_config_example.yaml cmd/acentral/acentral_config_example.yaml
+        args: zip -j "tmdetect_linux64_${{ github.ref_name }}.zip" acentral convert filter README.md cmd/filter/filter_config_example.yaml cmd/acentral/acentral_config_example.yaml
           
     - name: Build ACentral for macOS Intel
       run: |
@@ -51,7 +51,7 @@ jobs:
       uses: montudor/action-zip@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        args: zip "tmdetect_macos_intel_${{ github.ref_name }}.zip" acentral convert filter README.md cmd/filter/filter_config_example.yaml cmd/acentral/acentral_config_example.yaml
+        args: zip -j "tmdetect_macos_intel_${{ github.ref_name }}.zip" acentral convert filter README.md cmd/filter/filter_config_example.yaml cmd/acentral/acentral_config_example.yaml
             
     - name: Build ACentral for macOS ARM
       run: |
@@ -63,7 +63,7 @@ jobs:
       uses: montudor/action-zip@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        args: zip "tmdetect_macos_m_${{ github.ref_name }}.zip" acentral convert filter README.md cmd/filter/filter_config_example.yaml cmd/acentral/acentral_config_example.yaml
+        args: zip -j "tmdetect_macos_m_${{ github.ref_name }}.zip" acentral convert filter README.md cmd/filter/filter_config_example.yaml cmd/acentral/acentral_config_example.yaml
     
     - name: Release
       uses: softprops/action-gh-release@v1
