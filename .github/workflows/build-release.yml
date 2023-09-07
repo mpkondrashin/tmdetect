@@ -1,0 +1,30 @@
+name: Go
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+
+    - name: Check Go version
+      run: go version
+
+    - name: Tests
+      run: go test ./...
+
+    - name: Build ACentral for Windows
+      run: GOOS=windows GOARCH=amd64 go build cmd/acentral
+      
+    - name: Pack for Windows
+      uses: montudor/action-zip@v1
+      with:
+        args: zip tmdetect_acentral_win64.zip acentral.exe README.md
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: tmdetect_acentral_win64.zip

@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -17,7 +19,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-const EnvPrefix = "ACENTRAL"
+const EnvPrefix = "TMDETECT"
 
 const (
 	ConfigFileName = "config"
@@ -55,8 +57,10 @@ func Configure() {
 	if err := viper.BindPFlags(fs); err != nil {
 		log.Fatal(err)
 	}
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.SetEnvPrefix(EnvPrefix)
 	viper.AutomaticEnv()
+	fmt.Println(os.Getenv("TMDETECT_ACENTRAL_URL"))
 
 	viper.SetConfigName(ConfigFileName)
 	viper.SetConfigType(ConfigFileType)

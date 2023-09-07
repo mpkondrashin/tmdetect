@@ -5,7 +5,6 @@ Remove excess UDSO indicators for malware files that are detected by Trend Micro
 Trend Micro Apex Central offers convinient way to add IoCs to all Trend Micro products from one place. This feature can be used to mitigate the latest threats that are not blocked by other engines of the product. On the market, there is a big amount of sources for such indicators from commercial organizations and government bodies. As result, this feature is easy to misuse, by providing way more indicators then Trend Micro product are able to handle. TMDetect provides ability to remove hashes for files that are detected at least by one of other Trend Micro antimalware engines. Unfortunately is not possible to implement in direct manner as engines are designed to files but not their hashes. TMDetect project offers following approach to solve this problem: check database of hashes of the files that where analyzed in the past. One of the biggest databases of this kind on the market is VirusTotal project. If particular file was detected by Trend Micro in the past, it is very likely that its hash will be stored in Virus Total database along with Trend Micro verdict.
 
 
-
 Three utilities are offered:
 1. **Convert** - convert CSV file containing indicators of particular (see below) format to the one that is supported by Apex Central to import. This utility does not filter anything.
 2. **Filter** - filter special format CSV file with indicators and save to another CSV file to be imported to Apex Central
