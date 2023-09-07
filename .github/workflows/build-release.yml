@@ -57,4 +57,4 @@ jobs:
           tmdetect_win64.zip
           tmdetect_linux64.zip
           tmdetect_macos_intel.zip
-          "tmdetect_macos_m_${{ github.ref_name }}.zip"
+          tmdetect_macos_m_${{ github.ref_name }}.zip
