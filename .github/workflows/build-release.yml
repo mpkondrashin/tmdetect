@@ -47,7 +47,7 @@ jobs:
     - name: Pack for macOS ARM
       uses: montudor/action-zip@v1
       with:
-        args: zip tmdetect_macos_m.zip acentral README.md
+        args: zip "tmdetect_macos_m_${{ github.ref_name }}.zip" acentral README.md
     
     - name: Release
       uses: softprops/action-gh-release@v1
@@ -57,4 +57,4 @@ jobs:
           tmdetect_win64.zip
           tmdetect_linux64.zip
           tmdetect_macos_intel.zip
-          tmdetect_macos_m.zip
+          "tmdetect_macos_m_${{ github.ref_name }}.zip"
