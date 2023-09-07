@@ -84,7 +84,6 @@ func (c *Central) call(ctx context.Context, method string, path string, query st
 	return json.NewDecoder(response.Body).Decode(result)
 }
 
-// PUT|/webapp/api/suspiciousobjects/userdefinedso/||{"param":{"content":"A6CE7DE67AEB35871EAF763001AB7DA799B43E52","expiration_utc_date":"2023-08-13T19:06:07.915215+03:00","notes":"note1","scan_action":"log","type":2}}
 func (c *Central) CreateChecksum(httpMethod string, rawURL string, headers string, request_body string) string {
 	string_to_hash := strings.ToUpper(httpMethod) + "|" + strings.ToLower(rawURL) + "|" + headers + "|" + request_body
 	hash := sha256.New()

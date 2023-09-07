@@ -98,10 +98,7 @@ func GetApexCentral() *apex.Central {
 }
 
 func GetVTClient() *vt.Client {
-	vtAPIKey := viper.GetString(flagVTApiKey)
-	if vtAPIKey == "" {
-		log.Fatalf("parameter is missing: %s", flagVTApiKey)
-	}
+	vtAPIKey := GetNonEmpty(flagVTApiKey)
 	proxy := viper.GetString(flagVTProxy)
 	if proxy != "" {
 		proxyURL, err := url.Parse(proxy)
@@ -119,7 +116,7 @@ func GetVTClient() *vt.Client {
 }
 
 func main() {
-	log.Printf("ACentral started")
+	log.Print("ACentral started")
 	duration := viper.GetDuration(flagTimeout)
 	stopTime := time.Time{}
 	if duration != 0 {
