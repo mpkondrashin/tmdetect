@@ -23,7 +23,7 @@ jobs:
     - name: Pack for Windows
       uses: montudor/action-zip@v1
       with:
-        args: zip tmdetect_acentral_win64.zip acentral.exe README.md
+        args: zip tmdetect_win64.zip acentral.exe README.md
 
     - name: Build ACentral for Linux
       run: GOOS=linux GOARCH=amd64 go build ./cmd/acentral
@@ -31,12 +31,30 @@ jobs:
     - name: Pack for Linux
       uses: montudor/action-zip@v1
       with:
-        args: zip tmdetect_acentral_linux64.zip acentral README.md
+        args: zip tmdetect_linux64.zip acentral README.md
           
+    - name: Build ACentral for macOS Intel
+      run: GOOS=darwin GOARCH=amd64 go build ./cmd/acentral
+          
+    - name: Pack for macOS Intel
+      uses: montudor/action-zip@v1
+      with:
+        args: zip tmdetect_macos_intel.zip acentral README.md
+            
+    - name: Build ACentral for macOS ARM
+      run: GOOS=darwin GOARCH=arm64 go build ./cmd/acentral
+            
+    - name: Pack for macOS ARM
+      uses: montudor/action-zip@v1
+      with:
+        args: zip tmdetect_macos_m.zip acentral README.md
+    
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          tmdetect_acentral_win64.zip
-          tmdetect_acentral_linux64.zip
+          tmdetect_win64.zip
+          tmdetect_linux64.zip
+          tmdetect_macos_intel.zip
+          tmdetect_macos_m.zip
