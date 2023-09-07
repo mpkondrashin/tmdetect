@@ -179,6 +179,7 @@ func main() {
 
 	go QuotaDispatch(quota, inbox, limited)
 
+	count := 0
 	for n, so := range data {
 		if !stopTime.IsZero() && time.Now().After(stopTime) {
 			log.Println("Timeout")
@@ -186,9 +187,11 @@ func main() {
 			break
 		}
 		inbox <- so
+		count++
 	}
 	close(inbox)
 	wg.Wait()
+	log.Printf("Processed total %d hashes", count)
 	log.Println("Done")
 }
 
@@ -210,6 +213,7 @@ func QuotaDispatch(q *vtotal.VTQuota, in, out chan apex.UDSOListItem) {
 func UpdateUDSODispatch(in chan apex.UDSOListItem, central *apex.Central, wg *sync.WaitGroup) {
 	defer wg.Done()
 	log.Println("UpdateUDSODispatch")
+	count := 0
 	for so := range in {
 		log.Printf("Update %s", so.Content)
 		so.Notes = SetTimeStamp(so.Notes, time.Now())
@@ -218,12 +222,15 @@ func UpdateUDSODispatch(in chan apex.UDSOListItem, central *apex.Central, wg *sy
 		if err != nil {
 			log.Println(err)
 		}
+		count++
 	}
+	log.Printf("Updated %d hashes", count)
 }
 
 func DeleteUDSODispatch(in chan apex.UDSOListItem, central *apex.Central, wg *sync.WaitGroup) {
 	defer wg.Done()
 	log.Println("DeleteUDSODispatch")
+	count := 0
 	for so := range in {
 		log.Printf("Delete %s", so.Content)
 		add := central.UDSODelete().SetType(apex.UDSOTypeFile_sha1).SetContent(so.Content)
@@ -231,5 +238,7 @@ func DeleteUDSODispatch(in chan apex.UDSOListItem, central *apex.Central, wg *sy
 		if err != nil {
 			log.Println(err)
 		}
+		count++
 	}
+	log.Printf("Deleted %d hashes", count)
 }

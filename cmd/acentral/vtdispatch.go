@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -79,6 +80,9 @@ func (d *VTDispatch) Routine(wg *sync.WaitGroup) {
 }
 
 func (d *VTDispatch) IsDetected(hash string) bool {
+	seconds := 0
+	s := fmt.Sprintf("%02d:%02d:%02d", seconds/3600, seconds/60%60, seconds%60)
+	_ = s
 	//log.Printf("Malicious(%s)", hash)
 	sleepDuration := 1 * time.Second
 	tries := 16

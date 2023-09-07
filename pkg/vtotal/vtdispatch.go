@@ -72,7 +72,7 @@ func (d *VTDispatch) Malicious(hash string) bool {
 	sleepDuration := 1 * time.Second
 	tries := 16
 	for i := 1; i <= tries; i++ {
-		log.Printf("Check %d hash %s ", i, hash)
+		log.Printf("Check #%d. Hash %s ", i, hash)
 		file, err := d.client.GetObject(vt.URL("files/%s", hash))
 		// no error
 		// VT err - should retry
