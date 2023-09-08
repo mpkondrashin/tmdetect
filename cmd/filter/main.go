@@ -252,6 +252,9 @@ func ResultsDispatch(in chan string, wg *sync.WaitGroup) {
 	}
 
 	days := viper.GetInt(flagExpireDays)
+	if days == 0 {
+		log.Fatalf("parameter is missing: %s", flagExpireDays)
+	}
 	expire := time.Now().Add(time.Hour * 24 * time.Duration(days))
 
 	for hash := range in {
