@@ -109,3 +109,4 @@ Following options are available:
 3. --action - one of the "log" or "block" values
 4. --expire - days after the indicator will expire (removed automatically)
 5. --note - add note to each imported IoC
+6. --kind - comma separated list of types to convert. Others will be ignored. Available types are: ip,domain,url,sha1. By default, all types will be converted

@@ -19,6 +19,7 @@ const (
 	flagAction     = "action"
 	flagExpireDays = "expire"
 	flagNote       = "note"
+	flagKind       = "kind"
 )
 
 func Configure() {
@@ -28,7 +29,7 @@ func Configure() {
 	fs.String(flagAction, "log", "action (log/block)")
 	fs.Int(flagExpireDays, 30, "expire after (days)")
 	fs.String(flagNote, "", "note")
-
+	fs.String(flagKind, "ip,domain,url,sha1", "comma separated list of types to convert (url,ip-dst,hostname,domain,sha1)")
 	err := fs.Parse(os.Args[1:])
 	if err != nil {
 		log.Fatal(err)
@@ -36,6 +37,14 @@ func Configure() {
 	if err := viper.BindPFlags(fs); err != nil {
 		log.Fatal(err)
 	}
+}
+
+var translateType = map[iocscsv.ThreatType]apex.ObjectType{
+	iocscsv.ThreatTypeUrl:      apex.ObjectTypeURL,
+	iocscsv.ThreatTypeIp_dst:   apex.ObjectTypeIP,
+	iocscsv.ThreatTypeHostname: apex.ObjectTypeDomain,
+	iocscsv.ThreatTypeDomain:   apex.ObjectTypeDomain,
+	iocscsv.ThreatTypeSha1:     apex.ObjectTypeSHA1,
 }
 
 func main() {
@@ -52,17 +61,8 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	if input != os.Stdin {
-		log.Println("Loading input file")
-	}
-	lines, err := iocscsv.CSVReadFile(input, func(kind string) bool {
-		return kind == "sha1"
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	input.Close()
-	log.Printf("Loaded %d hashes", len(lines))
+
+	kinds := getKinds(viper.GetString(flagKind))
 
 	actionStr := "\"" + viper.GetString(flagAction) + "\""
 	var action apex.ScanAction
@@ -71,7 +71,7 @@ func main() {
 	}
 
 	days := viper.GetInt(flagExpireDays)
-	expire := time.Now().Add(time.Hour * 24 * time.Duration(days))
+	//expire := time.Now().Add(time.Hour * 24 * time.Duration(days))
 
 	output := os.Stdout
 	outputFileName := viper.GetString(flagOutput)
@@ -88,21 +88,53 @@ func main() {
 	}
 	fmt.Fprintln(output, apex.CSVHeading)
 
-	for _, hash := range lines {
-		hash = strings.TrimSpace(hash)
-		if hash == "" {
-			continue
+	if input != os.Stdin {
+		log.Printf("Loading input file %s", inputFileName)
+	}
+	if output != os.Stdout {
+		log.Printf("Saving result to %s", outputFileName)
+	}
+	countInput := 0
+	countOutput := 0
+	err := iocscsv.CSVIterate(input, func(ioc *iocscsv.IoC) error {
+		countInput++
+		t, ok := translateType[ioc.Type]
+		if !ok {
+			return nil
 		}
-		//log.Printf("Result %s", hash)
+		_, ok = kinds[t]
+		if !ok {
+			return nil
+		}
 		so := &apex.SO{
-			Object:        hash,
-			Type:          apex.ObjectTypeSHA1,
+			Object:        ioc.Content,
+			Type:          t,
 			Action:        action,
 			ScanPrefilter: "",
 			Notes:         viper.GetString(flagNote),
-			ExirationDate: expire,
+			ExirationDate: ioc.Time.Add(time.Hour * 24 * time.Duration(days)),
 		}
 		fmt.Fprintln(output, so)
+		countOutput++
+		return nil
+	})
+	if err != nil {
+		log.Fatal(err)
 	}
-	log.Printf("Saved %d hashes", len(lines))
+	input.Close()
+	log.Printf("Loaded %d IoCs", countInput)
+
+	log.Printf("Saved %d IoCs", countOutput)
+}
+
+func getKinds(commaSeparatedList string) map[apex.ObjectType]struct{} {
+	result := make(map[apex.ObjectType]struct{})
+	for _, kind := range strings.Split(commaSeparatedList, ",") {
+		var ot apex.ObjectType
+		if err := (&ot).UnmarshalJSON([]byte("\"" + kind + "\"")); err != nil {
+			log.Fatal(err)
+		}
+		result[ot] = struct{}{}
+	}
+	return result
 }
