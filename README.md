@@ -20,9 +20,9 @@ Filter indicators in Apex Central using Virus Total.
 ACentral utility connects to Virus Total and removes the ones that are detected by Trend Micro.
 
 ### Usage 
-1. Download [latest release] of acentral executable.
-2. Create configuration file (see below)
-3. Run acentral executable
+1. Download [latest release](https://github.com/mpkondrashin/tmdetect/releases/latest) of ```acentral``` executable for your platform.
+2. Copy ```acentral_config_example.yaml``` to ```config.yaml``` in the same directory as acentral executable itself. Edit ```config.yaml``` and change mandatory fields to correct values. Optional values can be omited.
+3. Run ```acentral``` executable.
 
 ### Configuration
 
@@ -58,17 +58,18 @@ TMDETECT_VTOTAL_API_KEY=2a44d6df1322000eb55c580d8f3dbe0d28b24435503576a967ebe8db
 ## Filter
 
 ### Usage
-1. Download [latest release] of tmdetect executable.
-2. Run following command:
+1. Download [latest release](https://github.com/mpkondrashin/tmdetect/releases/latest) of ```filter``` executable for your platform.
+2. Copy ```filter_config_example.yaml``` to ```config.yaml``` in the same directory as filter executable itself. Edit ```config.yaml``` and change mandatory fields to correct values. Optional values can be omited.
+3. Run ```filter``` executable. Parameters of the ```config.yaml``` can be overwritten by commandline keys:
 ```
-    tmdetect --apikey <virus total API key> --input <input filename> --output <output filename>
+    filter --apikey <virus total API key> --input <input filename> --output <output filename>
 ```
-3. Upload resulting file to Apex Centaral (Threat Intel -> Custom Intelligence -> User-Defined Suspicious Objects -> Import).
+4. Upload resulting CSV file to Apex Central (```Threat Intel -> Custom Intelligence -> User-Defined Suspicious Objects -> Import```).
 
 ### Configuration
 
-TMDetect provides following ways to provide options:
-1. Configuration file config.yaml. Application seeks for this file in its current folder or folder of CertAlert executable
+Filter provides following ways to provide options:
+1. Configuration file ```config.yaml```. Application seeks for this file in its current folder or folder of CertAlert executable
 2. Environment variables
 3. Command line parameters
 
