@@ -5,7 +5,7 @@ Remove excess UDSO indicators for malware files that are detected by the Trend M
 Trend Micro Apex Central offers a convenient way to add IoCs to all Trend Micro products from one place. This feature can be used to mitigate the latest threats that are not blocked by other engines of the product. On the market, there is a large amount of sources for such indicators from commercial organizations and government bodies. As a result, this feature is easy to misuse, by providing way more indicators than Trend Micro products are able to handle. TMDetect provides the ability to remove hashes for files that are detected at least by one of the other Trend Micro anti-malware engines. Unfortunately is not possible to implement in direct manner as engines are designed to files but not their hashes. TMDetect project offers the following approach to solve this problem: check database of hashes of the files that where analyzed in the past. One of the biggest databases of this kind on the market is VirusTotal project. If particular file was detected by Trend Micro in the past, it is very likely that its hash will be stored in Virus Total database along with Trend Micro verdict.
 
 Three utilities are offered:
-1. **Convert** - Convert the CSV file containing indicators of particular (see below) format to the one that is supported by Apex Central to import. This utility does not filter anything.
+1. **Convert** - Convert the CSV file containing indicators to files that can be imported into Apex Central. This utility does not filter anything.
 2. **Filter** - Filter special format CSV file with indicators and save to another CSV file to be imported to Apex Central
 3. **ACentral** - filter indicators already stored in Apex Central
 
@@ -98,12 +98,12 @@ uuid,category,type,value,event_threat_level_id,date
 ```
 
 ## Convert
-Convert utility changes format CSV file of the particular format (see above) to CSV that is accepted by Apex Central.
+Convert utility parses CSV using heuristics and generates files that can be uploaded into Apex Central.
+
+For URL, Domains, SHA1 and IP addresses file for Custom Inteligance is generated. For SHA256 this utility generates file to import into Application Control.
 
 The following options are available:
-1. --input - input file path or "-" for stdin
-2. --output - output file path or "-" for stdout
-3. --action - one of the "log" or "block" values
-4. --expire - days after the indicator will expire (removed automatically)
-5. --note - add a note to each imported IoC
-6. --kind - comma-separated list of types to convert. Others will be ignored. Available types are ip, domain, url, and sha1. By default, all types will be converted
+1. --input - input file path
+2. --action - one of the "log" or "block" values
+3. --expire - days after the indicator will expire (removed automatically). Default - 30.
+4. --note - add a note to each imported IoC
