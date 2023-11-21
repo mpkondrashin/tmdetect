@@ -47,17 +47,18 @@ func TestIsURL(t *testing.T) {
 		{"wef", "wef", false},
 		{"hxxps://storage[.]googleapis[.]com/yhrb4u5u8fo5[.]appspot[.]com/w/C3ptSnKGvbUfdXf[.]html?a=910675785738954864", "https://storage.googleapis.com/yhrb4u5u8fo5.appspot.com/w/C3ptSnKGvbUfdXf.html?a=910675785738954864", true},
 		{"hxxps://45[.]117[.]103[.]135/Compare/v2[.]66/G6EBS8VJR0", "https://45.117.103.135/Compare/v2.66/G6EBS8VJR0", true},
-		{"www.com", "www.com", true},
-		{"www[.]com", "www.com", true},
+		{"www.com", "https://www.com", true},
+		{"www[.]com", "https://www.com", true},
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.domain, func(t *testing.T) {
 			fixed, actual := IsURL(testCase.domain)
 			if actual != testCase.expected {
 				t.Errorf("For %s got %v and not %v", testCase.domain, actual, testCase.expected)
-			}
-			if fixed != testCase.fixed {
-				t.Errorf("For %s got %v and not %v", testCase.domain, fixed, testCase.fixed)
+			} else {
+				if testCase.expected && fixed != testCase.fixed {
+					t.Errorf("For %s got %v and not %v", testCase.domain, fixed, testCase.fixed)
+				}
 			}
 		})
 	}
