@@ -8,8 +8,7 @@ import (
 )
 
 func TestIterateSO(t *testing.T) {
-	//records, err := LoadCSVFile("../../../tip/Mops_Amber_IOCs_18082022.csv")
-	records, err := LoadCSVFile("corpus/0004.dat")
+	records, err := LoadCSVFile("corpus/0004.csv")
 	if err != nil {
 		t.Fatal(err)
 	}
