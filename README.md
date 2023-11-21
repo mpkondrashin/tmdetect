@@ -22,10 +22,11 @@ ACentral utility connects to Virus Total and removes the ones that are detected 
 1. Download [the latest release](https://github.com/mpkondrashin/tmdetect/releases/latest) of ```acentral``` executable for your platform.
 2. Copy ```acentral_config_example.yaml``` to ```config.yaml``` in the same directory as ACentral executable itself. Edit ```config.yaml``` and change mandatory fields to correct values. Optional values can be omitted.
 3. Run ```acentral``` executable.
+4. If it runs ok, then run it daily using Task Scheduler for Windows or crontab on Linux 
 
 ### Configuration
 ACentral provides the following ways to provide options:
-1. Configuration file ```config.yaml```. Application seeks for this file in its current folder or folder of CertAlert executable
+1. Configuration file ```config.yaml```. Application seeks for this file in its current folder or folder of executable
 2. Environment variables
 3. Command line parameters
 

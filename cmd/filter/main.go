@@ -261,7 +261,7 @@ func ResultsDispatch(in chan string, wg *sync.WaitGroup) {
 		log.Printf("Result %s", hash)
 		so := &apex.SO{
 			Object:        hash,
-			Type:          apex.ObjectTypeSHA1,
+			Type:          apex.ObjectTypeSha1,
 			Action:        action,
 			ScanPrefilter: "",
 			Notes:         "",

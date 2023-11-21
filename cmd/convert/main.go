@@ -4,32 +4,28 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
+	"path/filepath"
 	"time"
 
 	"github.com/mpkondrashin/tmdetect/pkg/apex"
-	"github.com/mpkondrashin/tmdetect/pkg/iocscsv"
+	"github.com/mpkondrashin/tmdetect/pkg/csvtoso"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
 const (
 	flagInput      = "input"
-	flagOutput     = "output"
 	flagAction     = "action"
 	flagExpireDays = "expire"
 	flagNote       = "note"
-	flagKind       = "kind"
 )
 
 func Configure() {
 	fs := pflag.NewFlagSet("TMDetect", pflag.ExitOnError)
 	fs.String(flagInput, "", "input filename")
-	fs.String(flagOutput, "", "output filename")
 	fs.String(flagAction, "log", "action (log/block)")
 	fs.Int(flagExpireDays, 30, "expire after (days)")
 	fs.String(flagNote, "", "note")
-	fs.String(flagKind, "ip,domain,url,sha1", "comma separated list of types to convert (url,ip-dst,hostname,domain,sha1)")
 	err := fs.Parse(os.Args[1:])
 	if err != nil {
 		log.Fatal(err)
@@ -39,31 +35,12 @@ func Configure() {
 	}
 }
 
-var translateType = map[iocscsv.ThreatType]apex.ObjectType{
-	iocscsv.ThreatTypeUrl:      apex.ObjectTypeURL,
-	iocscsv.ThreatTypeIp_dst:   apex.ObjectTypeIP,
-	iocscsv.ThreatTypeHostname: apex.ObjectTypeDomain,
-	iocscsv.ThreatTypeDomain:   apex.ObjectTypeDomain,
-	iocscsv.ThreatTypeSha1:     apex.ObjectTypeSHA1,
-}
-
 func main() {
 	Configure()
-	input := os.Stdin
 	inputFileName := viper.GetString(flagInput)
 	if inputFileName == "" {
 		log.Fatalf("parameter is missing: %s", flagInput)
 	}
-	if inputFileName != "-" {
-		var err error
-		input, err = os.Open(inputFileName)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	kinds := getKinds(viper.GetString(flagKind))
-
 	actionStr := "\"" + viper.GetString(flagAction) + "\""
 	var action apex.ScanAction
 	if err := (&action).UnmarshalJSON([]byte(actionStr)); err != nil {
@@ -71,70 +48,67 @@ func main() {
 	}
 
 	days := viper.GetInt(flagExpireDays)
-	//expire := time.Now().Add(time.Hour * 24 * time.Duration(days))
+	udsoFileName, appControlFileName := OutputFileNames(inputFileName)
 
-	output := os.Stdout
-	outputFileName := viper.GetString(flagOutput)
-	if outputFileName == "" {
-		log.Fatalf("parameter is missing: %s", flagOutput)
+	outputUDSO, err := os.Create(udsoFileName)
+	if err != nil {
+		log.Fatal(err)
 	}
-	if outputFileName != "-" {
-		var err error
-		output, err = os.Create(outputFileName)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer output.Close()
-	}
-	fmt.Fprintln(output, apex.CSVHeading)
+	defer outputUDSO.Close()
+	fmt.Fprintln(outputUDSO, apex.CSVHeading)
 
-	if input != os.Stdin {
-		log.Printf("Loading input file %s", inputFileName)
+	outputAC, err := apex.ACHashCreate(appControlFileName)
+	if err != nil {
+		log.Fatal(err)
 	}
-	if output != os.Stdout {
-		log.Printf("Saving result to %s", outputFileName)
-	}
+	defer outputAC.Close()
+
 	countInput := 0
-	countOutput := 0
-	err := iocscsv.CSVIterate(input, func(ioc *iocscsv.IoC) error {
+	countOutputUDSO := 0
+	countOutputSHA256 := 0
+	expireDate := time.Now().Add(time.Hour * 24 * time.Duration(days))
+	notes := viper.GetString(flagNote)
+	log.Printf("Processing %s", inputFileName)
+	log.Printf("Expire date for Custom Intelligence: %v", expireDate.Format("02.01.2006"))
+
+	err = csvtoso.IterateSO(inputFileName, func(content string, typ apex.ObjectType) error {
 		countInput++
-		t, ok := translateType[ioc.Type]
-		if !ok {
-			return nil
+		if typ == apex.ObjectTypeSha256 {
+			ac := &apex.SOiAC{
+				SHA:      content,
+				FileName: notes,
+			}
+			outputAC.WriteHash(ac)
+			countOutputSHA256++
+		} else {
+			so := &apex.SO{
+				Object:        content,
+				Type:          typ,
+				Action:        action,
+				ScanPrefilter: "",
+				Notes:         viper.GetString(flagNote),
+				ExirationDate: expireDate,
+			}
+			fmt.Fprintln(outputUDSO, so)
+			countOutputUDSO++
 		}
-		_, ok = kinds[t]
-		if !ok {
-			return nil
-		}
-		so := &apex.SO{
-			Object:        ioc.Content,
-			Type:          t,
-			Action:        action,
-			ScanPrefilter: "",
-			Notes:         viper.GetString(flagNote),
-			ExirationDate: ioc.Time.Add(time.Hour * 24 * time.Duration(days)),
-		}
-		fmt.Fprintln(output, so)
-		countOutput++
 		return nil
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	input.Close()
-	log.Printf("Loaded %d IoCs", countInput)
-
-	log.Printf("Saved %d IoCs", countOutput)
+	log.Printf("Parsed %d IoCs", countInput)
+	log.Printf("Saving UDSO result to %s", udsoFileName)
+	log.Printf("Saving AppControl result to %s", appControlFileName)
+	log.Printf("Saved %d IoCs for Custom Intelligence", countOutputUDSO)
+	log.Printf("Saved %d SHA256 for Application Control", countOutputSHA256)
 }
 
-func getKinds(commaSeparatedList string) map[apex.ObjectType]struct{} {
-	result := make(map[apex.ObjectType]struct{})
-	for _, kind := range strings.Split(commaSeparatedList, ",") {
-		var ot apex.ObjectType
-		if err := (&ot).UnmarshalJSON([]byte("\"" + kind + "\"")); err != nil {
-			log.Fatal(err)
-		}
-		result[ot] = struct{}{}
-	}
-	return result
+func fileNameWithoutExt(fileName string) string {
+	return fileName[:len(fileName)-len(filepath.Ext(fileName))]
+}
+
+func OutputFileNames(inputFileName string) (string, string) {
+	base := fileNameWithoutExt(inputFileName)
+	return base + "_custom_intelligence.csv", base + "_application_control.zip"
 }
